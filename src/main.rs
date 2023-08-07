@@ -1,18 +1,15 @@
 #![feature(slice_take)]
-
 mod utils;
 use image::{save_buffer_with_format, EncodableLayout, GenericImageView, ImageFormat};
 use rayon::{
     prelude::{IntoParallelIterator, ParallelIterator},
     slice::ParallelSliceMut,
 };
-use std::{cmp::Ordering, time::Instant};
-use utils::{Mode, IN_PATH, MODE, OUT_NAME};
-
-use crate::utils::luma_compare;
+use std::time::Instant;
+use utils::{SortMode, Direction, CONFIG, hue_compare, luma_compare};
 
 fn main() {
-    let path = IN_PATH;
+    let path = &CONFIG.input_path;
     let start = Instant::now();
 
     let img = image::open(path).unwrap();
@@ -22,14 +19,18 @@ fn main() {
     let bytes = rgb.as_bytes();
     let mut pixels: Vec<&[u8]> = bytes.chunks(3).collect();
 
-    match MODE {
-        Mode::Horizontal => {
+    let compare_fn = match CONFIG.mode {
+        SortMode::Luma => luma_compare,
+        SortMode::Hue => hue_compare
+    };
+
+    match CONFIG.direction {
+        Direction::Horizontal => {
             pixels
                 .par_chunks_mut(width as usize)
-                .for_each(|row| row.par_sort_by(luma_compare));
+                .for_each(|row| row.par_sort_by(compare_fn));
         }
-
-        Mode::Vertical => {
+        Direction::Vertical => {
             let mut columns = (0..width as usize)
                 .into_par_iter()
                 .map(|x| {
@@ -63,7 +64,7 @@ fn main() {
     };
 
     save_buffer_with_format(
-        &(OUT_NAME.to_owned() + suffix),
+        &(CONFIG.output_path.to_owned() + suffix),
         &flat_buffer,
         width,
         height,

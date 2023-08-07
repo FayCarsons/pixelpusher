@@ -1,0 +1,8 @@
+{ 
+  "direction": "Horizontal",
+  "mode": "Luma",
+  "lowThreshold": 32,
+  "highThreshold": 170,
+  "inputPath": "resources/cupidAndPsycheHQ.jpeg",
+  "outputPath": "CPHQ"
+}
