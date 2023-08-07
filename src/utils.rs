@@ -17,7 +17,6 @@ pub enum SortMode {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-#[serde(rename_all = "camelCase")]
 pub struct Config {
     pub direction: Direction,
     pub mode: SortMode,
@@ -28,12 +27,11 @@ pub struct Config {
 }
 
 pub static CONFIG: Lazy<Config> = Lazy::new(|| {
-    let mut file = File::open("./src/config.json").expect("cannot open config");
+    let mut file = File::open("./src/config.ron").expect("cannot open config");
     let mut buffer = String::new();
     file.read_to_string(&mut buffer)
         .expect("cannot read config");
-    let config = serde_json::from_str(&buffer).expect("cannot parse config");
-    config
+    ron::from_str(&buffer).expect("cannot parse config")
 });
 
 /*
