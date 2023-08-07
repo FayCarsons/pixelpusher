@@ -27,7 +27,7 @@ pub struct Config {
 }
 
 pub static CONFIG: Lazy<Config> = Lazy::new(|| {
-    let mut file = File::open("./src/config.ron").expect("cannot open config");
+    let mut file = File::open("config.ron").expect("cannot open config");
     let mut buffer = String::new();
     file.read_to_string(&mut buffer)
         .expect("cannot read config");

@@ -55,21 +55,13 @@ fn main() {
         .map(|x| *x)
         .collect::<Vec<u8>>();
 
-    let format = image::guess_format(&flat_buffer).unwrap_or(image::ImageFormat::Bmp);
-
-    let suffix = match format {
-        ImageFormat::Jpeg => ".jpg",
-        ImageFormat::Png => ".png",
-        _ => ".bmp",
-    };
-
     save_buffer_with_format(
-        &(CONFIG.output_path.to_owned() + suffix),
+        &(CONFIG.output_path.to_owned() + ".bmp"),
         &flat_buffer,
         width,
         height,
         image::ColorType::Rgb8,
-        format,
+        ImageFormat::Bmp,
     )
     .expect("unable to save image");
 

@@ -1,0 +1,8 @@
+Config (
+        direction: Horizontal,
+        mode: Luma,
+        low_threshold: 32,
+        high_threshold: 168,
+        input_path: "resources/smaller.png",
+        output_path: "CPHQ"
+)
